@@ -22,28 +22,24 @@ expression
         | VAR                                                    # variable
         ;
 
-
 /* === LEXER === */
-NUMBER  : DIGIT* '.' DIGIT+  // Decimals potentially of the forn .994 for 0.994
+DIGIT   : [0-9] ;
+
+NUMBER  : DIGIT* '.' DIGIT+  // Decimals potentially of the form .994 for 0.994
         | DIGIT+             // Integers
         ;
 
-DIGIT   : [0-9]
+WS      : [ \t\r\n\u000C]+ -> skip  // ignore whitepaces
         ;
 
-WS      : [ \t\r\n\u000C]+ -> skip
-        ;
-
-COMMENT :   '/*' .*? '*/' -> skip
+COMMENT :   '/*' .*? '*/' -> skip  // ignore multi-line comments
         ;
 
 LINE_COMMENT
-        : '//' ~[\r\n]* -> skip
+        : '//' ~[\r\n]* -> skip  // ignore line comments
         ;
 
-VAR     : [a-zA-Z][0-9]*  // One lowercase or uppercase letter followed by 0 or more digits
-        ;
-
+VAR : [a-zA-Z][0-9]* ;  // One lowercase or uppercase letter followed by 0 or more digits
 OP_ASSIGN : '=' ;
 OP_MUL : '*' ;
 OP_DIV : '/' ;

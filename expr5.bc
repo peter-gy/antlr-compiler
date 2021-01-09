@@ -3,4 +3,4 @@
  */
 
 // Testing complex expression with mixed terms and parentheses
--(-5.5+10*(6-2)/100);
+-(-5.5+10*(6-2)/100)+.1-(-5);

@@ -1,33 +1,48 @@
 grammar BigCalc;
 
-expressionStatement
-        : expression ';' EOF
+program : statement+
+        ;
+
+statement
+        : expression END_OF_STAT                # expressionStatement
+        | assignment END_OF_STAT                # assignmentStatement
+        ;
+
+assignment
+        : VAR ASSIGN_TO expression
         ;
 
 expression  
-        : expression op=('*' | '/') expression  # mulDiv
-        | expression op=('+' | '-') expression  # addSub
-        | Number                                # num
+        : expression op=(MUL | DIV) expression  # mulDiv
+        | expression op=(ADD | SUB) expression  # addSub
+        | NUMBER                                # num
+        | VAR                                   # variable
+        | PAR_LEFT expression PAR_RIGHT         # parExpression
         ;
 
-Number  
-        : Digit* '.' Digit+
-        | Digit+
+NUMBER  : DIGIT* '.' DIGIT+
+        | DIGIT+
         ;
 
-Digit   
-        : [0-9]
+DIGIT   : [0-9]
         ;
 
-WS      : [ \t\r\n\u000C]+ -> skip  
+WS      : [ \t\r\n\u000C]+ -> skip
         ;
 
-COMMENT
-        :   '/*' .*? '*/' -> skip
+COMMENT :   '/*' .*? '*/' -> skip
         ;
 
 LINE_COMMENT
-        : '//' ~[\r\n]* -> skip 
+        : '//' ~[\r\n]* -> skip
         ;
 
-
+VAR : [a-zA-Z][0-9]* ; // One lowercase or uppercase letter followed by 0 or more digits
+END_OF_STAT : ';' ;
+ASSIGN_TO : '=' ;
+MUL : '*' ;
+DIV : '/' ;
+ADD : '+' ;
+SUB : '-' ;
+PAR_LEFT : '(';
+PAR_RIGHT : ')';

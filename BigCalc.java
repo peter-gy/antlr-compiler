@@ -13,7 +13,7 @@ public class BigCalc {
            final BigCalcLexer lexer = new BigCalcLexer(input);
            final CommonTokenStream tokens = new CommonTokenStream(lexer);
            final BigCalcParser parser = new BigCalcParser(tokens);
-           final ParseTree tree = parser.expressionStatement();
+           final ParseTree tree = parser.program();
 
            final BigCalcVisitor<BigDecimal> visitor = new BigCalcVisitorImpl();
            final BigDecimal result = visitor.visit(tree);
@@ -25,6 +25,7 @@ public class BigCalc {
       	   System.out.println("usage: usage: java BigCalc <file>");
         }
         catch (Exception e) {
+            e.printStackTrace();
            System.out.println(e);
         }
     }

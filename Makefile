@@ -6,7 +6,7 @@ run:
 	java -cp antlr-4.7.1-complete.jar:. BigCalc $(file) 
 
 viz:
-	java -cp antlr-4.7.1-complete.jar:. org.antlr.v4.gui.TestRig BigCalc expression -gui
+	java -cp antlr-4.7.1-complete.jar:. org.antlr.v4.gui.TestRig BigCalc $(part) -gui
 
 clean:
 	rm -f *.class

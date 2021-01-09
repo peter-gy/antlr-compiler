@@ -1,0 +1,6 @@
+/*
+ * author: a11913446 - Péter Ferenc Gyarmati
+ */
+
+// Testing complex expression with mixed terms and parentheses
+-(-5.5+10*(6-2)/100);

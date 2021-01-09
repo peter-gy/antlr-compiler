@@ -1,2 +1,6 @@
-12+1/3-2*1.5;
+/*
+ * author: a11913446 - Péter Ferenc Gyarmati
+ */
 
+// Testing complex expression with positive terms
+12+1/3-2*1.5;

@@ -23,11 +23,13 @@ expression
         ;
 
 /* === LEXER === */
-DIGIT   : [0-9] ;
 
+// NUMBER definition should come before DIGIT to indicate the order of lexing for the lexer
 NUMBER  : DIGIT* '.' DIGIT+  // Decimals potentially of the form .994 for 0.994
         | DIGIT+             // Integers
         ;
+
+DIGIT   : [0-9] ;
 
 WS      : [ \t\r\n\u000C]+ -> skip  // ignore whitepaces
         ;

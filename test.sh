@@ -1,2 +1,2 @@
-find . -name '*.bc' -exec make run file={} \;
-
+make compile;
+find ./inputs -name '*.bc' -exec make run file={} \;

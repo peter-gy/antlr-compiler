@@ -1,12 +1,12 @@
 compile:
-	java -jar antlr-4.7.1-complete.jar -visitor BigCalc.g4
-	javac -cp antlr-4.7.1-complete.jar:. *.java
+	java -jar lib/antlr-4.7.1-complete.jar -visitor BigCalc.g4
+	javac -cp lib/antlr-4.7.1-complete.jar:. *.java
 
 run:
-	java -cp antlr-4.7.1-complete.jar:. BigCalc $(file) 
+	java -cp lib/antlr-4.7.1-complete.jar:. BigCalc $(file)
 
 viz:
-	java -cp antlr-4.7.1-complete.jar:. org.antlr.v4.gui.TestRig BigCalc $(part) -gui
+	java -cp lib/antlr-4.7.1-complete.jar:. org.antlr.v4.gui.TestRig BigCalc $(part) -gui
 
 clean:
 	rm -f *.class
@@ -20,4 +20,3 @@ clean:
 	rm -f 'BigCalcListener.java'
 	rm -f 'BigCalcParser.java'
 	rm -f 'BigCalcVisitor.java'
-

@@ -1,27 +1,31 @@
 grammar BigCalc;
 
-program : statement+
+/* === PARSER === */
+program : statement+ EOF  // A program is made up of at least one statement
         ;
 
 statement
-        : expression END_OF_STAT                # expressionStatement
-        | assignment END_OF_STAT                # assignmentStatement
+        : expression END_OF_STAT                                 # expressionStatement
+        | assignment END_OF_STAT                                 # assignmentStatement
         ;
 
 assignment
-        : VAR ASSIGN_TO expression
+        : VAR OP_ASSIGN expression
         ;
 
 expression  
-        : expression op=(MUL | DIV) expression  # mulDiv
-        | expression op=(ADD | SUB) expression  # addSub
-        | NUMBER                                # num
-        | VAR                                   # variable
-        | PAR_LEFT expression PAR_RIGHT         # parExpression
+        : PAR_LEFT expression PAR_RIGHT                          # parExpression
+        | op=(OP_ADD | OP_SUB) expression                        # plusMinus
+        | left=expression op=(OP_MUL | OP_DIV) right=expression  # mulDiv
+        | left=expression op=(OP_ADD | OP_SUB) right=expression  # addSub
+        | NUMBER                                                 # num
+        | VAR                                                    # variable
         ;
 
-NUMBER  : DIGIT* '.' DIGIT+
-        | DIGIT+
+
+/* === LEXER === */
+NUMBER  : DIGIT* '.' DIGIT+  // Decimals potentially of the forn .994 for 0.994
+        | DIGIT+             // Integers
         ;
 
 DIGIT   : [0-9]
@@ -37,12 +41,14 @@ LINE_COMMENT
         : '//' ~[\r\n]* -> skip
         ;
 
-VAR : [a-zA-Z][0-9]* ; // One lowercase or uppercase letter followed by 0 or more digits
+VAR     : [a-zA-Z][0-9]*  // One lowercase or uppercase letter followed by 0 or more digits
+        ;
+
+OP_ASSIGN : '=' ;
+OP_MUL : '*' ;
+OP_DIV : '/' ;
+OP_ADD : '+' ;
+OP_SUB : '-' ;
 END_OF_STAT : ';' ;
-ASSIGN_TO : '=' ;
-MUL : '*' ;
-DIV : '/' ;
-ADD : '+' ;
-SUB : '-' ;
 PAR_LEFT : '(';
 PAR_RIGHT : ')';

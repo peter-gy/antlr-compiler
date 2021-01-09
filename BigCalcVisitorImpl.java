@@ -7,7 +7,7 @@ public class BigCalcVisitorImpl extends BigCalcBaseVisitor<BigDecimal> {
     private final Map<String, BigDecimal> variables = new HashMap<>();
     private static final BigDecimal DEFAULT_VALUE = new BigDecimal(0);
 
-    /* statement+ */
+    /* statement+ EOF */
     @Override
     public BigDecimal visitProgram(BigCalcParser.ProgramContext ctx) {
         BigDecimal value = DEFAULT_VALUE;
@@ -28,7 +28,7 @@ public class BigCalcVisitorImpl extends BigCalcBaseVisitor<BigDecimal> {
         return visit(ctx.assignment());
     }
 
-    /* VAR ASSIGN_TO expression */
+    /* VAR OP_ASSIGN expression */
     @Override
     public BigDecimal visitAssignment(BigCalcParser.AssignmentContext ctx) {
         String variableName = ctx.VAR().getText();
@@ -37,22 +37,38 @@ public class BigCalcVisitorImpl extends BigCalcBaseVisitor<BigDecimal> {
         return variableValue;
     }
 
-    /* expression op=(MUL | DIV) expression */
+    /* PAR_LEFT expression PAR_RIGHT */
     @Override
-    public BigDecimal visitMulDiv(BigCalcParser.MulDivContext ctx) {
-        BigDecimal left = visit(ctx.expression(0));
-        BigDecimal right = visit(ctx.expression(1));
-        boolean isMultiplication = ctx.op.getType() == BigCalcParser.MUL;
-        return isMultiplication ? left.multiply(right) : left.divide(right, 10, RoundingMode.HALF_UP);
+    public BigDecimal visitParExpression(BigCalcParser.ParExpressionContext ctx) {
+        return visit(ctx.expression());
     }
 
-    /* expression op=(ADD | SUB) expression */
+    /* op=(OP_ADD | OP_SUB) expression */
+    @Override
+    public BigDecimal visitPlusMinus(BigCalcParser.PlusMinusContext ctx) {
+        BigDecimal value = visit(ctx.expression());
+        boolean isPlus = ctx.op.getType() == BigCalcParser.OP_ADD;
+        return isPlus ? value : value.negate();
+    }
+
+    /* left=expression op=(OP_MUL | OP_DIV) right=expression */
+    @Override
+    public BigDecimal visitMulDiv(BigCalcParser.MulDivContext ctx) {
+        BigDecimal leftValue = visit(ctx.left);
+        BigDecimal rightValue = visit(ctx.right);
+        boolean isMultiplication = ctx.op.getType() == BigCalcParser.OP_MUL;
+        return isMultiplication
+                ? leftValue.multiply(rightValue)
+                : leftValue.divide(rightValue, 10, RoundingMode.HALF_UP);
+    }
+
+    /* left=expression op=(OP_ADD | OP_SUB) right=expression */
     @Override
     public BigDecimal visitAddSub(BigCalcParser.AddSubContext ctx) {
-        BigDecimal left = visit(ctx.expression(0));
-        BigDecimal right = visit(ctx.expression(1));
-        boolean isAddition = ctx.op.getType() == BigCalcParser.ADD;
-        return isAddition ? left.add(right) : left.subtract(right);
+        BigDecimal leftValue = visit(ctx.left);
+        BigDecimal rightValue = visit(ctx.right);
+        boolean isAddition = ctx.op.getType() == BigCalcParser.OP_ADD;
+        return isAddition ? leftValue.add(rightValue) : leftValue.subtract(rightValue);
     }
 
     /* NUMBER */
@@ -67,11 +83,5 @@ public class BigCalcVisitorImpl extends BigCalcBaseVisitor<BigDecimal> {
         String variableName = ctx.VAR().getText();
         if (variables.containsKey(variableName)) return variables.get(variableName);
         return DEFAULT_VALUE;
-    }
-
-    /* PAR_LEFT expression PAR_RIGHT */
-    @Override
-    public BigDecimal visitParExpression(BigCalcParser.ParExpressionContext ctx) {
-        return visit(ctx.expression());
     }
 }

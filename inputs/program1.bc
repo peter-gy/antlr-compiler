@@ -1,10 +1,19 @@
-/*
- * PLC WS 20/21
- * Example program for BigCalcProg
+/**
+ * @author Péter Ferenc Gyarmati
+ * @id 11913446
+ * @comment READ-ONLY FILE
  */
 
-// variables
-t = 100; s = 200; u = 300; v = 400.0000000001;
+//comment
+T=2.23456; V=33333333333333333333333;
+S=99.9;
 
-// expression with variables and parentheses
-((t + s) / u * v);
+X=T/S;
+
+X=X+X*V;
+
+/* comment
+x*x*x
+*/
+
+

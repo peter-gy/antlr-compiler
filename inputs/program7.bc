@@ -1,0 +1,11 @@
+/*
+ * author: a11913446 - Péter Ferenc Gyarmati
+ */
+
+// Variables
+a=10*10;
+b=20*20;
+c=-b;
+
+// Expression
+-a+2*(b/c);

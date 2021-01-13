@@ -1,4 +1,8 @@
-grammar BigCalc;
+/**
+ * @author Péter Ferenc Gyarmati
+ * @id 11913446
+ */
+grammar BigCalcProg;
 
 /* === PARSER === */
 program : statement+ EOF  // A program is made up of at least one statement

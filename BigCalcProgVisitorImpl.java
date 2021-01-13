@@ -3,34 +3,38 @@ import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BigCalcVisitorImpl extends BigCalcBaseVisitor<BigDecimal> {
+/**
+ * @author Péter Ferenc Gyarmati
+ * @id 11913446
+ */
+public class BigCalcProgVisitorImpl extends BigCalcProgBaseVisitor<BigDecimal> {
     private final Map<String, BigDecimal> variables = new HashMap<>();
     private static final BigDecimal DEFAULT_VALUE = new BigDecimal(0);
 
     /* statement+ EOF */
     @Override
-    public BigDecimal visitProgram(BigCalcParser.ProgramContext ctx) {
+    public BigDecimal visitProgram(BigCalcProgParser.ProgramContext ctx) {
         BigDecimal value = DEFAULT_VALUE;
-        for (BigCalcParser.StatementContext statementContext : ctx.statement())
+        for (BigCalcProgParser.StatementContext statementContext : ctx.statement())
             value = visit(statementContext);
         return value;
     }
 
     /* expression END_OF_STAT */
     @Override
-    public BigDecimal visitExpressionStatement(BigCalcParser.ExpressionStatementContext ctx) {
+    public BigDecimal visitExpressionStatement(BigCalcProgParser.ExpressionStatementContext ctx) {
         return visit(ctx.expression());
     }
 
     /* assignment END_OF_STAT */
     @Override
-    public BigDecimal visitAssignmentStatement(BigCalcParser.AssignmentStatementContext ctx) {
+    public BigDecimal visitAssignmentStatement(BigCalcProgParser.AssignmentStatementContext ctx) {
         return visit(ctx.assignment());
     }
 
     /* VAR OP_ASSIGN expression */
     @Override
-    public BigDecimal visitAssignment(BigCalcParser.AssignmentContext ctx) {
+    public BigDecimal visitAssignment(BigCalcProgParser.AssignmentContext ctx) {
         String variableName = ctx.VAR().getText();
         BigDecimal variableValue = visit(ctx.expression());
         variables.put(variableName, variableValue);
@@ -39,24 +43,24 @@ public class BigCalcVisitorImpl extends BigCalcBaseVisitor<BigDecimal> {
 
     /* PAR_LEFT expression PAR_RIGHT */
     @Override
-    public BigDecimal visitParExpression(BigCalcParser.ParExpressionContext ctx) {
+    public BigDecimal visitParExpression(BigCalcProgParser.ParExpressionContext ctx) {
         return visit(ctx.expression());
     }
 
     /* op=(OP_ADD | OP_SUB) expression */
     @Override
-    public BigDecimal visitPlusMinus(BigCalcParser.PlusMinusContext ctx) {
+    public BigDecimal visitPlusMinus(BigCalcProgParser.PlusMinusContext ctx) {
         BigDecimal value = visit(ctx.expression());
-        boolean isPlus = ctx.op.getType() == BigCalcParser.OP_ADD;
+        boolean isPlus = ctx.op.getType() == BigCalcProgParser.OP_ADD;
         return isPlus ? value : value.negate();
     }
 
     /* left=expression op=(OP_MUL | OP_DIV) right=expression */
     @Override
-    public BigDecimal visitMulDiv(BigCalcParser.MulDivContext ctx) {
+    public BigDecimal visitMulDiv(BigCalcProgParser.MulDivContext ctx) {
         BigDecimal leftValue = visit(ctx.left);
         BigDecimal rightValue = visit(ctx.right);
-        boolean isMultiplication = ctx.op.getType() == BigCalcParser.OP_MUL;
+        boolean isMultiplication = ctx.op.getType() == BigCalcProgParser.OP_MUL;
         return isMultiplication
                 ? leftValue.multiply(rightValue)
                 : leftValue.divide(rightValue, 10, RoundingMode.HALF_UP);
@@ -64,22 +68,22 @@ public class BigCalcVisitorImpl extends BigCalcBaseVisitor<BigDecimal> {
 
     /* left=expression op=(OP_ADD | OP_SUB) right=expression */
     @Override
-    public BigDecimal visitAddSub(BigCalcParser.AddSubContext ctx) {
+    public BigDecimal visitAddSub(BigCalcProgParser.AddSubContext ctx) {
         BigDecimal leftValue = visit(ctx.left);
         BigDecimal rightValue = visit(ctx.right);
-        boolean isAddition = ctx.op.getType() == BigCalcParser.OP_ADD;
+        boolean isAddition = ctx.op.getType() == BigCalcProgParser.OP_ADD;
         return isAddition ? leftValue.add(rightValue) : leftValue.subtract(rightValue);
     }
 
     /* NUMBER */
     @Override
-    public BigDecimal visitNum(BigCalcParser.NumContext ctx) {
+    public BigDecimal visitNum(BigCalcProgParser.NumContext ctx) {
         return new BigDecimal(ctx.NUMBER().getText());
     }
 
     /* VAR */
     @Override
-    public BigDecimal visitVariable(BigCalcParser.VariableContext ctx) {
+    public BigDecimal visitVariable(BigCalcProgParser.VariableContext ctx) {
         String variableName = ctx.VAR().getText();
         if (variables.containsKey(variableName)) return variables.get(variableName);
         return DEFAULT_VALUE;

@@ -47,6 +47,13 @@ public class BigCalcProgVisitorImpl extends BigCalcProgBaseVisitor<BigDecimal> {
         return visit(ctx.expression());
     }
 
+    /* ABS_OPEN expression ABS_CLOSE */
+    @Override
+    public BigDecimal visitAbs(BigCalcProgParser.AbsContext ctx) {
+        BigDecimal arg = visit(ctx.expression());
+        return arg.abs();
+    }
+
     /* op=(OP_ADD | OP_SUB) expression */
     @Override
     public BigDecimal visitPlusMinus(BigCalcProgParser.PlusMinusContext ctx) {
@@ -64,6 +71,14 @@ public class BigCalcProgVisitorImpl extends BigCalcProgBaseVisitor<BigDecimal> {
         return isMultiplication
                 ? leftValue.multiply(rightValue)
                 : leftValue.divide(rightValue, 10, RoundingMode.HALF_UP);
+    }
+
+    /* left=expression OP_POW<assoc=right> right=expression */
+    @Override
+    public BigDecimal visitPow(BigCalcProgParser.PowContext ctx) {
+        BigDecimal leftValue = visit(ctx.left);
+        BigDecimal rightValue = visit(ctx.right);
+        return leftValue.pow(rightValue.intValue());
     }
 
     /* left=expression op=(OP_ADD | OP_SUB) right=expression */

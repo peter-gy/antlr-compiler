@@ -19,10 +19,15 @@ assignment
 
 expression  
         : PAR_LEFT expression PAR_RIGHT                          # parExpression
+        | ABS_SIGN expression ABS_SIGN                           # abs
         | op=(OP_ADD | OP_SUB) expression                        # plusMinus
+        | left=expression OP_POW<assoc=right> right=expression   # pow
         | left=expression op=(OP_MUL | OP_DIV) right=expression  # mulDiv
         | left=expression op=(OP_ADD | OP_SUB) right=expression  # addSub
-        | NUMBER                                                 # num
+        | val                                                    # value
+        ;
+
+val     : NUMBER                                                 # num
         | VAR                                                    # variable
         ;
 
@@ -51,6 +56,10 @@ OP_MUL : '*' ;
 OP_DIV : '/' ;
 OP_ADD : '+' ;
 OP_SUB : '-' ;
+OP_POW : '^' ;
 END_OF_STAT : ';' ;
-PAR_LEFT : '(';
-PAR_RIGHT : ')';
+PAR_LEFT : '(' ;
+PAR_RIGHT : ')' ;
+ABS_SIGN : '|' ;
+ARR_OPEN : '[' ;
+ARR_CLOSE : ']' ;

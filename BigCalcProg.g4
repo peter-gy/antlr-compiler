@@ -14,7 +14,11 @@ statement
         ;
 
 assignment
-        : VAR OP_ASSIGN expression
+        : VAR OP_ASSIGN expression                               # varAssignment
+        | VAR op=(OP_MUL
+                | OP_DIV
+                | OP_ADD
+                | OP_SUB) OP_ASSIGN expression                   # compoundAssignment
         ;
 
 expression  
@@ -40,16 +44,6 @@ NUMBER  : DIGIT* '.' DIGIT+  // Decimals potentially of the form .994 for 0.994
 
 DIGIT   : [0-9] ;
 
-WS      : [ \t\r\n\u000C]+ -> skip  // ignore whitepaces
-        ;
-
-COMMENT :   '/*' .*? '*/' -> skip  // ignore multi-line comments
-        ;
-
-LINE_COMMENT
-        : '//' ~[\r\n]* -> skip  // ignore line comments
-        ;
-
 VAR : [a-zA-Z][0-9]* ;  // One lowercase or uppercase letter followed by 0 or more digits
 OP_ASSIGN : '=' ;
 OP_MUL : '*' ;
@@ -63,3 +57,13 @@ PAR_RIGHT : ')' ;
 ABS_SIGN : '|' ;
 ARR_OPEN : '[' ;
 ARR_CLOSE : ']' ;
+
+WS      : [ \t\r\n\u000C]+ -> skip  // ignore whitepaces
+        ;
+
+COMMENT :   '/*' .*? '*/' -> skip  // ignore multi-line comments
+        ;
+
+LINE_COMMENT
+        : '//' ~[\r\n]* -> skip  // ignore line comments
+        ;

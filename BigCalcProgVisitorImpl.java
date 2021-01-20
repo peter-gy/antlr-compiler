@@ -34,11 +34,28 @@ public class BigCalcProgVisitorImpl extends BigCalcProgBaseVisitor<BigDecimal> {
 
     /* VAR OP_ASSIGN expression */
     @Override
-    public BigDecimal visitAssignment(BigCalcProgParser.AssignmentContext ctx) {
+    public BigDecimal visitVarAssignment(BigCalcProgParser.VarAssignmentContext ctx) {
         String variableName = ctx.VAR().getText();
         BigDecimal variableValue = visit(ctx.expression());
         variables.put(variableName, variableValue);
         return variableValue;
+    }
+
+    /* VAR op=(OP_MUL| OP_DIV | OP_ADD | OP_SUB) OP_ASSIGN expression */
+    @Override
+    public BigDecimal visitCompoundAssignment(BigCalcProgParser.CompoundAssignmentContext ctx) {
+        String variableName = ctx.VAR().getText();
+        BigDecimal oldValue = variables.getOrDefault(variableName, DEFAULT_VALUE);
+        BigDecimal arg = visit(ctx.expression());
+        BigDecimal newValue = DEFAULT_VALUE;
+        switch (ctx.op.getType()) {
+            case BigCalcProgParser.OP_MUL: newValue = oldValue.multiply(arg); break;
+            case BigCalcProgParser.OP_DIV: newValue = oldValue.divide(arg, 10, RoundingMode.HALF_UP); break;
+            case BigCalcProgParser.OP_ADD: newValue = oldValue.add(arg); break;
+            case BigCalcProgParser.OP_SUB: newValue = oldValue.subtract(arg); break;
+        }
+        variables.put(variableName, newValue);
+        return newValue;
     }
 
     /* PAR_LEFT expression PAR_RIGHT */

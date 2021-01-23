@@ -64,7 +64,7 @@ public class BigCalcProgVisitorImpl extends BigCalcProgBaseVisitor<BigDecimal> {
         return visit(ctx.expression());
     }
 
-    /* ABS_OPEN expression ABS_CLOSE */
+    /* ABS_SIGN expression ABS_SIGN */
     @Override
     public BigDecimal visitAbs(BigCalcProgParser.AbsContext ctx) {
         BigDecimal arg = visit(ctx.expression());

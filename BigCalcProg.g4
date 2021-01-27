@@ -25,6 +25,7 @@ expression
         : PAR_LEFT expression PAR_RIGHT                          # parExpression
         | ABS_SIGN expression ABS_SIGN                           # abs
         | op=(OP_ADD | OP_SUB) expression                        # plusMinus
+        | left=expression OP_MOD right=expression                # mod
         | <assoc=right> left=expression OP_POW right=expression  # pow
         | left=expression op=(OP_MUL | OP_DIV) right=expression  # mulDiv
         | left=expression op=(OP_ADD | OP_SUB) right=expression  # addSub
@@ -51,6 +52,7 @@ OP_DIV : '/' ;
 OP_ADD : '+' ;
 OP_SUB : '-' ;
 OP_POW : '^' ;
+OP_MOD : '%' ;
 END_OF_STAT : ';' ;
 PAR_LEFT : '(' ;
 PAR_RIGHT : ')' ;

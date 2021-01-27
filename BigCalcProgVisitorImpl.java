@@ -79,6 +79,13 @@ public class BigCalcProgVisitorImpl extends BigCalcProgBaseVisitor<BigDecimal> {
         return isPlus ? value : value.negate();
     }
 
+    @Override
+    public BigDecimal visitMod(BigCalcProgParser.ModContext ctx) {
+        BigDecimal leftValue = visit(ctx.left);
+        BigDecimal rightValue = visit(ctx.right);
+        return leftValue.remainder(rightValue);
+    }
+
     /* left=expression op=(OP_MUL | OP_DIV) right=expression */
     @Override
     public BigDecimal visitMulDiv(BigCalcProgParser.MulDivContext ctx) {
@@ -90,7 +97,7 @@ public class BigCalcProgVisitorImpl extends BigCalcProgBaseVisitor<BigDecimal> {
                 : leftValue.divide(rightValue, 10, RoundingMode.HALF_UP);
     }
 
-    /* left=expression OP_POW<assoc=right> right=expression */
+    /* <assoc=right> left=expression OP_POW right=expression */
     @Override
     public BigDecimal visitPow(BigCalcProgParser.PowContext ctx) {
         BigDecimal leftValue = visit(ctx.left);

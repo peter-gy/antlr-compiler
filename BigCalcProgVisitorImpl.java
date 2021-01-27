@@ -79,6 +79,7 @@ public class BigCalcProgVisitorImpl extends BigCalcProgBaseVisitor<BigDecimal> {
         return isPlus ? value : value.negate();
     }
 
+    /* left=expression OP_MOD right=expression */
     @Override
     public BigDecimal visitMod(BigCalcProgParser.ModContext ctx) {
         BigDecimal leftValue = visit(ctx.left);

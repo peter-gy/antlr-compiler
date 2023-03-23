@@ -23,6 +23,7 @@ assignment
 
 expression  
         : PAR_LEFT expression PAR_RIGHT                          # parExpression
+        | e1=expression '?' e2=expression ':' e3=expression      # ternaryExpression
         | ABS_SIGN expression ABS_SIGN                           # abs
         | op=(OP_ADD | OP_SUB) expression                        # plusMinus
         | left=expression OP_MOD right=expression                # mod
@@ -40,6 +41,7 @@ val     : NUMBER                                                 # num
 
 // NUMBER definition should come before DIGIT to indicate the order of lexing for the lexer
 NUMBER  : DIGIT* '.' DIGIT+  // Decimals potentially of the form .994 for 0.994
+        | DIGIT* '.' DIGIT+ [eE] [+-]? DIGIT
         | DIGIT+             // Integers
         ;
 
@@ -57,6 +59,7 @@ END_OF_STAT : ';' ;
 PAR_LEFT : '(' ;
 PAR_RIGHT : ')' ;
 ABS_SIGN : '|' ;
+NOTHING : [^$];
 
 WS      : [ \t\r\n\u000C]+ -> skip  // ignore whitepaces
         ;

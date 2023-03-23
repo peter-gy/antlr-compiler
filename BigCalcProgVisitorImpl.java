@@ -32,6 +32,14 @@ public class BigCalcProgVisitorImpl extends BigCalcProgBaseVisitor<BigDecimal> {
         return visit(ctx.assignment());
     }
 
+    @Override
+    public BigDecimal visitTernaryExpression(BigCalcProgParser.TernaryExpressionContext ctx) {
+        BigDecimal e1 = visit(ctx.e1);
+        BigDecimal e2 = visit(ctx.e2);
+        BigDecimal e3 = visit(ctx.e3);
+        return e1.doubleValue() != 0.0 ? e2 : e3;
+    }
+
     /* VAR OP_ASSIGN expression */
     @Override
     public BigDecimal visitVarAssignment(BigCalcProgParser.VarAssignmentContext ctx) {
@@ -126,6 +134,7 @@ public class BigCalcProgVisitorImpl extends BigCalcProgBaseVisitor<BigDecimal> {
     public BigDecimal visitVariable(BigCalcProgParser.VariableContext ctx) {
         String variableName = ctx.VAR().getText();
         if (variables.containsKey(variableName)) return variables.get(variableName);
+        else System.out.println("Warning: undefined variable: " + ctx.VAR().getSymbol().getText());
         return DEFAULT_VALUE;
     }
 }
